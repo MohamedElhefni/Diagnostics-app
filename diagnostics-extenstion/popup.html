@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+        body 
+        {
+          min-width: 300px;
+          padding: 1em;
+
+        }
+        .center {text-align: center;}
+       
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1>
+        Diagnostics App
+      </h1>
+      <div class="cpu-section">
+        <h3 class="center">CPU</h3>
+        <div id="cpu-information">
+        </div>
+        <div id="processorsUsage"></div>
+      </div>
+      <div class="memory-section">
+        <h3 class="center">MEMORY</h3>
+        <div id="memory-information"></div>
+      </div>
+      <div class="storage-section">
+        <h3 class="center">STORAGE</h3>
+        <div id="storage-information"></div>
+      </div>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>
