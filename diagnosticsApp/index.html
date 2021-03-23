@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    rel="stylesheet"
+  />
+    <meta name="theme-color" content="#3498db" />
+    <link type="text/css" href="/css/materialize.min.css" rel="stylesheet" />
+    <link type="text/css" href="/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="/js/materialize.min.js"></script>
+    <link rel="manifest" crossorigin="use-credentials" href="manifest.json"/>
+    <meta name="apple-mobile-web-app-status-bar" content="#aa7700" />
+
+    <title>Dignostics App</title>
+</head>
+<body>
+    
+
+    <nav class="z-depth-0">
+        <div class="nav-wrapper container">
+          <a href="/"><span>Diagnostics</span></a>
+          <span class="right  text-darken-1">
+            <i class="material-icons sidenav-trigger" data-target="side-menu"
+              >menu</i
+            >
+          </span>
+        </div>
+      </nav>
+
+      <!-- side nav -->
+      <ul id="side-menu" class="sidenav side-menu">
+        <li><a class="subheader">Diagnostics</a></li>
+        <li><a href="/" class="waves-effect">Home</a></li>
+        <li><a href="/pages/diagnostics-manager.html" class="waves-effect">Diagnostics Manager</a></li>
+        <li><a href="/pages/system-state.html" class="waves-effect">System State</a></li>
+        <li><div class="divider"></div></li>
+      </ul>
+
+      <div class="container">
+          <h1>Diagnostics app</h1>
+          <canvas id="myChart" width="400" height="400"></canvas>
+
+      </div>
+
+      <script type="text/javascript" src="/js/app.js"></script>
+      <script type="text/javascript" src="/js/ui.js"></script>
+
+</body>
+</html>
