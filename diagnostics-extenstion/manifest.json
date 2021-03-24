@@ -19,7 +19,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://127.0.0.1:*/", "https://127.0.0.1:*/","http://127.0.0.1:*/index.html", "http://*:*/index.html", "http://*:*/"],
+      "matches": ["https://diagnostics-app.netlify.app/","http://127.0.0.1:*/", "https://127.0.0.1:*/","http://127.0.0.1:*/index.html", "http://*:*/index.html", "http://*:*/"],
       "js": ["moment.js", "chart.js", "chartjs-streaming.min.js", "content.js"]
     }
   ],
