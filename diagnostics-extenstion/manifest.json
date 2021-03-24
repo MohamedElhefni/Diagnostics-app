@@ -9,7 +9,7 @@
   },
   "content_scripts":[ {
     "matches": ["http://127.0.0.1:5500/"],
-    "js":[ "chart.js","content.js"]
+    "js":[ "moment.js","chart.js", "chartjs-streaming.min.js","content.js"]
   }],
   "browser_action": {
     "default_popup": "popup.html",
