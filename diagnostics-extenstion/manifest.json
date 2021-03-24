@@ -2,15 +2,27 @@
   "name": "Diagnostics Extenstion",
   "version": "1.0",
   "description": "Build an Extension to get System Information ",
-  "permissions": ["system.cpu","system.memory","system.storage","system.display","activeTab", "declarativeContent", "storage", "<all_urls>", "tabs"],
+  "permissions": [
+    "system.cpu",
+    "system.memory",
+    "system.storage",
+    "system.display",
+    "activeTab",
+    "declarativeContent",
+    "storage",
+    "<all_urls>",
+    "tabs"
+  ],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
   },
-  "content_scripts":[ {
-    "matches": ["http://127.0.0.1:5500/*"],
-    "js":[ "moment.js","chart.js", "chartjs-streaming.min.js","content.js"]
-  }],
+  "content_scripts": [
+    {
+      "matches": ["http://127.0.0.1:*/", "https://127.0.0.1:*/","http://127.0.0.1:*/index.html", "http://*:*/index.html", "http://*:*/"],
+      "js": ["moment.js", "chart.js", "chartjs-streaming.min.js", "content.js"]
+    }
+  ],
   "browser_action": {
     "default_popup": "popup.html",
     "default_icon": {
