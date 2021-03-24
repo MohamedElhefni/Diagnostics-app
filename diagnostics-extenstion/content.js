@@ -79,9 +79,9 @@ port.onMessage.addListener(function (msg) {
     myChart.update({
       preservation: true,
     });
+    port.postMessage({ question: "getCpuUsage" });
   }
 
-  // port.postMessage({ question: "getCpuUsage" });
 
   if (msg.usage) {
     msg.usage.forEach((usage) => {

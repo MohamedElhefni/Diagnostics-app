@@ -28,8 +28,6 @@ function getCpuUsage(info) {
   return usage;
 }
 
-// console.log(chrome.system)
-
 chrome.runtime.onConnect.addListener(function (port) {
   console.assert(port.name == "knockknock");
   port.onMessage.addListener(function (msg) {
@@ -37,15 +35,22 @@ chrome.runtime.onConnect.addListener(function (port) {
       chrome.system.cpu.getInfo(function (info) {
         port.postMessage({ cpu: info });
       });
-    }
-
-    // if (msg.question == "getCpuUsage") {
-      setInterval(() => {
+    } else if (msg.question == "getCpuUsage") {
+      let cpuInterval = setInterval(sendCpuUsage, 1000);
+      function sendCpuUsage() {
         chrome.system.cpu.getInfo((info) => {
           let usage = getCpuUsage(info);
           port.postMessage({ usage: usage });
         });
-      }, 1000);
+      }
+      port.onDisconnect.addListener(function () {
+        clearInterval(cpuInterval);
+        port = null;
+      });
+    }
+
+    // if (msg.question == "getCpuUsage") {
+
     // }
 
     // setInterval(() => {
