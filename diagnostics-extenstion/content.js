@@ -1,4 +1,6 @@
 let cpuName = document.getElementById("cpuName");
+let memUsage = document.getElementById("memUsage");
+let storageInfo = document.getElementById("storageInfo")
 let chartColors = [
   "rgb(255, 99, 132)",
   "rgb(255, 159, 64)",
@@ -7,90 +9,126 @@ let chartColors = [
   "rgb(54, 162, 235)",
 ];
 
-let config = {
-  type: "line",
-  data: {
-    datasets: [],
-  },
-  options: {
-    responsive: false,
-    title: {
-      display: true,
-      text: "CPU History ",
+function makeConfig(text) {
+  return {
+    type: "line",
+    data: {
+      datasets: [],
     },
-    scales: {
-      xAxes: [
-        {
-          type: "realtime",
-          realtime: {
-            duration: 20000,
-            refresh: 1000,
-            delay: 2000,
+    options: {
+      responsive: false,
+      title: {
+        display: true,
+        text: text,
+      },
+      scales: {
+        xAxes: [
+          {
+            type: "realtime",
+            realtime: {
+              duration: 20000,
+              refresh: 1000,
+              delay: 2000,
+            },
           },
-        },
-      ],
-      yAxes: [
-        {
-          scaleLabel: {
-            display: true,
-            labelString: "value",
+        ],
+        yAxes: [
+          {
+            ticks: {
+              min: 0,
+              max: 100,
+              stepSize: 20
           },
-        },
-      ],
+            scaleLabel: {
+              display: true,
+              labelString: "value",
+            },
+          },
+        ],
+      },
+      tooltips: {
+        mode: "nearest",
+        intersect: false,
+      },
+      hover: {
+        mode: "nearest",
+        intersect: false,
+      },
     },
-    tooltips: {
-      mode: "nearest",
-      intersect: false,
-    },
-    hover: {
-      mode: "nearest",
-      intersect: false,
-    },
+  };
+}
+
+function toGB(val) {
+  return val / (1024 * 1024 * 1024);
+}
+
+let cpuConfig = makeConfig("CPU History ");
+let cpuCharCanvas = document.getElementById("cpuChart").getContext("2d");
+let cpuChart = new Chart(cpuCharCanvas, cpuConfig);
+
+let memConfig = makeConfig("Memory History");
+let memoCharCanvas = document.getElementById("memChart").getContext("2d");
+let memChart = new Chart(memoCharCanvas, memConfig);
+memDataSet = [
+  {
+    label: `Memory`,
+    borderColor: chartColors[3],
+    fill: false,
+    cubicInterpolationMode: "monotone",
+    data: [],
   },
-};
-// let testDatasets = createDataset([
-//   {
-//     label: `Processor 1`,
-//     // backgroundColor: color(chartColors[i]).alpha(0.5).rgbString(),
-//     borderColor: chartColors[0],
-//     fill: false,
-//     cubicInterpolationMode: "monotone",
-//     data: [],
-//   },
-//   {
-//     label: `Processor 2`,
-//     // backgroundColor: color(chartColors[i]).alpha(0.5).rgbString(),
-//     borderColor: chartColors[1],
-//     fill: false,
-//     cubicInterpolationMode: "monotone",
-//     data: [],
-//   },
-// ]);
+];
+memChart.data.datasets = memDataSet;
+memChart.update({
+  preservation: true,
+});
 
-var ctx = document.getElementById("myChart").getContext("2d");
-let myChart = new Chart(ctx, config);
-
-var port = chrome.runtime.connect({ name: "knockknock" });
-port.postMessage({ question: "getCpuInformation" });
+let port = chrome.runtime.connect({ name: "systemInformation" });
+port.postMessage({ question: "getInformation" });
 port.onMessage.addListener(function (msg) {
   if (msg.cpu) {
+    // update cpu name 
     cpuName.textContent = msg.cpu.modelName;
-    myChart.data.datasets = createDataset(msg.cpu.processors);
-    myChart.update({
+    cpuChart.data.datasets = createDataset(msg.cpu.processors);
+    cpuChart.update({
       preservation: true,
     });
-    port.postMessage({ question: "getCpuUsage" });
+    port.postMessage({ question: "getUsage" });
+  }
+
+  if(msg.storage)
+  {
+      let txt = "";
+      msg.storage.forEach((storage) => {
+          let capacity = toGB(storage.capacity).toFixed(2);
+          txt += `
+            <p> <b> name: ${storage.name} (${storage.type}) </b>
+            <p> <b>Capacity: </b>  ${capacity} GB </p>
+          `;
+        storageInfo.innerHTML = txt;
+      });
   }
 
 
   if (msg.usage) {
-    msg.usage.forEach((usage) => {
-      myChart.data.datasets[usage.id].data.push({
+    msg.usage.cpuUsage.forEach((usage) => {
+      cpuChart.data.datasets[usage.id].data.push({
         x: Date.now(),
         y: usage.usage,
       });
     });
-    myChart.update({
+    cpuChart.update({
+      preservation: true,
+    });
+
+    // update memory usage title and chart
+    let memo = msg.usage.memUsage;
+    memUsage.textContent = `${memo.usedInGB} GiB (${memo.used}%) of ${memo.capacity} GiB`;
+    memChart.data.datasets[0].data.push({
+      x: Date.now(),
+      y: memo.used,
+    });
+    memChart.update({
       preservation: true,
     });
   }
@@ -112,29 +150,3 @@ function createDataset(processors) {
   });
   return datasests;
 }
-
-function randomScalingFactor() {
-  return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
-}
-
-// setInterval(function () {
-//   myChart.data.datasets.forEach((dataset) => {
-//       if(dataset.data.length >= 7)
-//       {
-//         dataset.data.shift()
-//       }
-//     let num = Math.floor(Math.random() * 20);
-//     dataset.data.push(num);
-//   });
-//   myChart.update();
-// }, 500);
-
-// function addData(chart, label, data) {
-//     chart.data.labels.push(label);
-//     chart.data.datasets.forEach((dataset) => {
-//         dataset.data.push(data);
-//     });
-//     chart.update();
-// }
-
-// addData(myChart, "test", 100)

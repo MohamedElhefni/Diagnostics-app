@@ -4,10 +4,16 @@ nav
 }
 
 
-#myChart
+#cpuChart
 {
     width: 100%;
 }
+
+#memChart
+{
+    width: 100%;
+}
+
 .chart-container
 {
     margin: auto;

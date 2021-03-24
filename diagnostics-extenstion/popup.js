@@ -5,7 +5,7 @@ let storageInfo = document.getElementById("storage-information");
 let oldInfo = 0;
 
 function toGB(val) {
-  return Math.round(val / (1024 * 1024 * 1024));
+  return val / (1024 * 1024 * 1024);
 }
 
 function updateCpuUsage(info) {
@@ -57,8 +57,8 @@ function getCpuInformation() {
   });
 }
 
-function getMemUsage(info) {
-  var capacity, used, usedInPercentage;
+function getMemUsageInPercentage(info) {
+  var capacity, used, usedInPercentage, leftInPercentage;
   capacity = info.capacity / 1.074e9;
   used = info.availableCapacity / 1.074e9;
   leftInPercentage = Math.round((used / capacity) * 100);
@@ -73,10 +73,12 @@ function getMemUsage(info) {
 function showMemUsage() {
   setInterval(() => {
     chrome.system.memory.getInfo(function (info) {
-      let usedCapacity = getMemUsage(info).used;
-      let capacityInGB = toGB(info.capacity);
+      let usedCapacity = getMemUsageInPercentage(info).used;
+      let capacityInGB = toGB(info.capacity).toFixed(1);
+      let usedCapacityInGB =
+        capacityInGB - toGB(info.availableCapacity).toFixed(1);
       let memSection = `
-    <p> <b>Capacity: </b>  ${capacityInGB} GB </p>
+    <p> <b>Capacity: </b>  ${capacityInGB} GB  /  <b> Used: </b> ${usedCapacityInGB}  </p>
     <p> <b>Used Capacity: </b>  ${usedCapacity} % </p>
     `;
       memInfo.innerHTML = memSection;
@@ -88,7 +90,7 @@ function getStorageUsage() {
   let txt = "";
   chrome.system.storage.getInfo(function (info) {
     info.forEach((storage) => {
-      let capacity = toGB(storage.capacity);
+      let capacity = toGB(storage.capacity).toFixed(2);
       txt += `
         <p> <b> name: ${storage.name} (${storage.type}) </b>
         <p> <b>Capacity: </b>  ${capacity} GB </p>

@@ -8,7 +8,7 @@
     "persistent": false
   },
   "content_scripts":[ {
-    "matches": ["http://127.0.0.1:5500/"],
+    "matches": ["http://127.0.0.1:5500/*"],
     "js":[ "moment.js","chart.js", "chartjs-streaming.min.js","content.js"]
   }],
   "browser_action": {
