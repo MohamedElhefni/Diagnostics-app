@@ -62,6 +62,15 @@ function toGB(val) {
   return val / (1024 * 1024 * 1024);
 }
 
+function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
 let cpuConfig = makeConfig("CPU History ");
 let cpuCharCanvas = document.getElementById("cpuChart").getContext("2d");
 let cpuChart = new Chart(cpuCharCanvas, cpuConfig);
@@ -141,7 +150,7 @@ function createDataset(processors) {
     let processorSet = {
       label: `Processor ${i + 1}`,
       // backgroundColor: color(chartColors[i]).alpha(0.5).rgbString(),
-      borderColor: chartColors[i],
+      borderColor: getRandomColor(),
       fill: false,
       cubicInterpolationMode: "monotone",
       data: [],

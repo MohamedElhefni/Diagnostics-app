@@ -23,8 +23,8 @@ npm run serve
 ## Images
 ___
 
+![alt text](./img/multiple-cores.png "multiple cores chart")
 ![alt text](./img/diagnsotics-extension.png "the extension")
 ![alt text](./img/app-with-ext.png "Cpu Chart With the extension")
 ![alt text](./img/pwa-mem-usage.png "Memory Usage Chart on pwa app")
 ![alt text](./img/cpuusage.png "Cpu Usage Chart ")
-![alt text](./img/pwa-cpu-chart.png "Cpu Chart on pwa app")
