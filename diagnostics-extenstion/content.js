@@ -1,14 +1,36 @@
+/*
+  content.js is the script which will be injected to the pwa app 
+  and it will update the page with the information which will be sent from background.js
+*/
 let cpuName = document.getElementById("cpuName");
 let memUsage = document.getElementById("memUsage");
 let storageInfo = document.getElementById("storageInfo")
-let chartColors = [
-  "rgb(255, 99, 132)",
-  "rgb(255, 159, 64)",
-  "rgb(255, 205, 86)",
-  "rgb(75, 192, 192)",
-  "rgb(54, 162, 235)",
-];
+let cpuConfig = makeConfig("CPU History ");
+let cpuCharCanvas = document.getElementById("cpuChart").getContext("2d");
+let cpuChart = new Chart(cpuCharCanvas, cpuConfig);
+let memConfig = makeConfig("Memory History");
+let memoCharCanvas = document.getElementById("memChart").getContext("2d");
+let memChart = new Chart(memoCharCanvas, memConfig);
 
+// create memory dataset to add to chart 
+let memDataSet = [
+  {
+    label: `Memory`,
+    borderColor: "rgb(75, 192, 192)",
+    fill: false,
+    cubicInterpolationMode: "monotone",
+    data: [],
+  },
+];
+memChart.data.datasets = memDataSet; 
+memChart.update({
+  preservation: true,
+});
+
+/**
+ * make config for Chart
+ * @param {string} text 
+ */
 function makeConfig(text) {
   return {
     type: "line",
@@ -71,32 +93,34 @@ function getRandomColor() {
   return color;
 }
 
-let cpuConfig = makeConfig("CPU History ");
-let cpuCharCanvas = document.getElementById("cpuChart").getContext("2d");
-let cpuChart = new Chart(cpuCharCanvas, cpuConfig);
+/**
+ * create processors datasets to pass to the config 
+ * @param {object} processors 
+ */
+function createDataset(processors) {
+  let datasests = [];
 
-let memConfig = makeConfig("Memory History");
-let memoCharCanvas = document.getElementById("memChart").getContext("2d");
-let memChart = new Chart(memoCharCanvas, memConfig);
-memDataSet = [
-  {
-    label: `Memory`,
-    borderColor: chartColors[3],
-    fill: false,
-    cubicInterpolationMode: "monotone",
-    data: [],
-  },
-];
-memChart.data.datasets = memDataSet;
-memChart.update({
-  preservation: true,
-});
+  processors.forEach((processor, i) => {
+    let processorSet = {
+      label: `Processor ${i + 1}`,
+      borderColor: getRandomColor(),
+      fill: false,
+      cubicInterpolationMode: "monotone",
+      data: [],
+    };
+    datasests.push(processorSet);
+  });
+  return datasests;
+}
 
+
+// start connection with background.js
 let port = chrome.runtime.connect({ name: "systemInformation" });
 port.postMessage({ question: "getInformation" });
 port.onMessage.addListener(function (msg) {
+  // check if the message contain cpu information 
+  // if it contain it will send request to get the usage of cpu and memory 
   if (msg.cpu) {
-    // update cpu name 
     cpuName.textContent = msg.cpu.modelName;
     cpuChart.data.datasets = createDataset(msg.cpu.processors);
     cpuChart.update({
@@ -105,6 +129,7 @@ port.onMessage.addListener(function (msg) {
     port.postMessage({ question: "getUsage" });
   }
 
+  // check if the msg contain the storage information and update the storageInfo with it
   if(msg.storage)
   {
       let txt = "";
@@ -119,7 +144,9 @@ port.onMessage.addListener(function (msg) {
   }
 
 
+  // if the msg contain the usage it will loop for each usage and update each chart with the usage of it 
   if (msg.usage) {
+    // update cpu chart with the usage
     msg.usage.cpuUsage.forEach((usage) => {
       cpuChart.data.datasets[usage.id].data.push({
         x: Date.now(),
@@ -143,19 +170,4 @@ port.onMessage.addListener(function (msg) {
   }
 });
 
-function createDataset(processors) {
-  let datasests = [];
 
-  processors.forEach((processor, i) => {
-    let processorSet = {
-      label: `Processor ${i + 1}`,
-      // backgroundColor: color(chartColors[i]).alpha(0.5).rgbString(),
-      borderColor: getRandomColor(),
-      fill: false,
-      cubicInterpolationMode: "monotone",
-      data: [],
-    };
-    datasests.push(processorSet);
-  });
-  return datasests;
-}

@@ -1,7 +1,9 @@
-"use strict";
-
 let oldInfo = 0;
 
+/**
+ * get processors usage in percentage to push it to content.js 
+ * @param {objeect} info 
+ */
 function getCpuUsage(info) {
   let usage = [];
   info.processors.forEach((processor, i) => {
@@ -28,6 +30,10 @@ function getCpuUsage(info) {
   return usage;
 }
 
+/**
+ *  get memory usage in percentage to push it to content.js 
+ * @param {object} info 
+ */
 function getMemUsage(info) {
   var capacity, used, usedInPercentage, leftInPercentage;
   capacity = info.capacity / 1.074e9;
@@ -42,10 +48,12 @@ function getMemUsage(info) {
     capacity: capacity.toFixed(2),
   };
 }
-
+// start the connection with content.js
 chrome.runtime.onConnect.addListener(function (port) {
   console.assert(port.name == "systemInformation");
   port.onMessage.addListener(function (msg) {
+    // check if content.js requested to getInformation
+    // it sends cpu and storage static information
     if (msg.question == "getInformation") {
       chrome.system.cpu.getInfo(function (info) {
         port.postMessage({cpu: info})
@@ -53,10 +61,10 @@ chrome.runtime.onConnect.addListener(function (port) {
       chrome.system.storage.getInfo(function (info) {
         port.postMessage({storage: info})
       });
-    } else if (msg.question == "getUsage") {
+    } else if (msg.question == "getUsage") { 
       let usageInterval = setInterval(sendUsage, 1000);
       let usage = {};
-      function sendUsage() {
+      function sendUsage() { // send cpu and memory 
         chrome.system.cpu.getInfo((info) => {
           usage.cpuUsage = getCpuUsage(info);
         });
@@ -72,35 +80,6 @@ chrome.runtime.onConnect.addListener(function (port) {
         port = null;
       });
     }
-    // else if (msg.question == "getMemUsage") {
-    //   // let memInterval = setInterval(sendMemUsage, 1000);
-    //   function sendMemUsage() {
-    //     chrome.system.memory.getInfo(function (info) {
-    //       let memUsage = getMemUsage(info);
-    //       port.postMessage({ memUsage: memUsage });
-    //     });
-    //   }
-    //   port.onDisconnect.addListener(function () {
-    //     clearInterval(memInterval);
-    //     port = null;
-    //   });
-    // }
+   
   });
-});
-
-chrome.system.cpu.getInfo(function (info) {
-  // console.log(JSON.stringify(info));
-  console.log(info);
-});
-
-// setInterval(() => {
-//   chrome.system.memory.getInfo(function (info) {
-//     // console.log(JSON.stringify(info));
-//     console.log(info.availableCapacity);
-//   });
-// }, 1000)
-
-chrome.system.storage.getInfo(function (info) {
-  // console.log(JSON.stringify(info));
-  console.log(info);
 });
