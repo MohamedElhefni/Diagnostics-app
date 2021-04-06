@@ -22,7 +22,7 @@ npm run serve
 
 ## Images
 ___
-
+![alt text](./img/img/cpu-chart-1.png "Chart 1 multiple cores")
 ![alt text](./img/multiple-cores.png "multiple cores chart")
 ![alt text](./img/diagnsotics-extension.png "the extension")
 ![alt text](./img/app-with-ext.png "Cpu Chart With the extension")
