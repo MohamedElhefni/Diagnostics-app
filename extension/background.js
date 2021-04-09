@@ -1,8 +1,8 @@
 let oldInfo = 0;
 
 /**
- * get processors usage in percentage to push it to content.js 
- * @param {objeect} info 
+ * get processors usage in percentage to push it to content.js
+ * @param {objeect} info
  */
 function getCpuUsage(info) {
   let usage = [];
@@ -29,10 +29,9 @@ function getCpuUsage(info) {
   oldInfo = info;
   return usage;
 }
-
 /**
- *  get memory usage in percentage to push it to content.js 
- * @param {object} info 
+ *  get memory usage in percentage to push it to content.js
+ * @param {object} info
  */
 function getMemUsage(info) {
   var capacity, used, usedInPercentage, leftInPercentage;
@@ -48,23 +47,24 @@ function getMemUsage(info) {
     capacity: capacity.toFixed(2),
   };
 }
-// start the connection with content.js
-chrome.runtime.onConnect.addListener(function (port) {
-  console.assert(port.name == "systemInformation");
+
+chrome.runtime.onConnectExternal.addListener(function (port) {
+  port.postMessage({ msg: "just test from our background" });
   port.onMessage.addListener(function (msg) {
     // check if content.js requested to getInformation
     // it sends cpu and storage static information
     if (msg.question == "getInformation") {
       chrome.system.cpu.getInfo(function (info) {
-        port.postMessage({cpu: info})
+        port.postMessage({ cpu: info });
       });
       chrome.system.storage.getInfo(function (info) {
-        port.postMessage({storage: info})
+        port.postMessage({ storage: info });
       });
-    } else if (msg.question == "getUsage") { 
+    } else if (msg.question == "getUsage") {
       let usageInterval = setInterval(sendUsage, 1000);
       let usage = {};
-      function sendUsage() { // send cpu and memory 
+      function sendUsage() {
+        // send cpu and memory
         chrome.system.cpu.getInfo((info) => {
           usage.cpuUsage = getCpuUsage(info);
         });
@@ -80,6 +80,5 @@ chrome.runtime.onConnect.addListener(function (port) {
         port = null;
       });
     }
-   
   });
 });

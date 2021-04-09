@@ -9,9 +9,13 @@
       rel="stylesheet"
     />
     <meta name="theme-color" content="#3498db" />
-    <link type="text/css" href="/css/materialize.min.css" rel="stylesheet" />
-    <link type="text/css" href="/css/style.css" rel="stylesheet" />
-    <script type="text/javascript" src="/js/materialize.min.js"></script>
+    <link
+      type="text/css"
+      href="assets/css/materialize.min.css"
+      rel="stylesheet"
+    />
+    <link type="text/css" href="assets/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="assets/js/materialize.min.js"></script>
     <link rel="manifest" crossorigin="use-credentials" href="manifest.json" />
     <meta name="apple-mobile-web-app-status-bar" content="#aa7700" />
 
@@ -56,23 +60,25 @@
 
       <!-- memroy history usage section -->
       <section class="memory-usage">
-        <h5>Memroy History </h5>
+        <h5>Memroy History</h5>
         <p><b id="memUsage"></b></p>
         <div class="chart-container">
           <canvas id="memChart"></canvas>
         </div>
-
       </section>
 
       <!-- Storage Section -->
       <section class="storage">
-        <h5>Storage: </h5>
+        <h5>Storage:</h5>
         <p id="storageInfo"></p>
       </section>
-
     </div>
 
-    <script type="text/javascript" src="/js/app.js"></script>
-    <script type="text/javascript" src="/js/ui.js"></script>
+    <script src="assets/js/materialize.min.js"></script>
+    <script src="assets/js/moment.js"></script>
+    <script src="assets/js/chart.min.js"></script>
+    <script src="assets/js/chart-streaming.min.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/system.js"></script>
   </body>
 </html>

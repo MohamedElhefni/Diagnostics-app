@@ -4,7 +4,7 @@
 */
 let cpuName = document.getElementById("cpuName");
 let memUsage = document.getElementById("memUsage");
-let storageInfo = document.getElementById("storageInfo")
+let storageInfo = document.getElementById("storageInfo");
 let cpuConfig = makeConfig("CPU History ");
 let cpuCharCanvas = document.getElementById("cpuChart").getContext("2d");
 let cpuChart = new Chart(cpuCharCanvas, cpuConfig);
@@ -12,7 +12,7 @@ let memConfig = makeConfig("Memory History");
 let memoCharCanvas = document.getElementById("memChart").getContext("2d");
 let memChart = new Chart(memoCharCanvas, memConfig);
 
-// create memory dataset to add to chart 
+// create memory dataset to add to chart
 let memDataSet = [
   {
     label: `Memory`,
@@ -22,14 +22,14 @@ let memDataSet = [
     data: [],
   },
 ];
-memChart.data.datasets = memDataSet; 
+memChart.data.datasets = memDataSet;
 memChart.update({
   preservation: true,
 });
 
 /**
  * make config for Chart
- * @param {string} text 
+ * @param {string} text
  */
 function makeConfig(text) {
   return {
@@ -59,8 +59,8 @@ function makeConfig(text) {
             ticks: {
               min: 0,
               max: 100,
-              stepSize: 20
-          },
+              stepSize: 20,
+            },
             scaleLabel: {
               display: true,
               labelString: "value",
@@ -85,8 +85,8 @@ function toGB(val) {
 }
 
 function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
+  var letters = "0123456789ABCDEF";
+  var color = "#";
   for (var i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
@@ -94,8 +94,8 @@ function getRandomColor() {
 }
 
 /**
- * create processors datasets to pass to the config 
- * @param {object} processors 
+ * create processors datasets to pass to the config
+ * @param {object} processors
  */
 function createDataset(processors) {
   let datasests = [];
@@ -113,13 +113,15 @@ function createDataset(processors) {
   return datasests;
 }
 
-
 // start connection with background.js
-let port = chrome.runtime.connect({ name: "systemInformation" });
+
+const extId = "njhgenahioafobmefamgkkgfpdccgpoi";
+const port = chrome.runtime.connect(extId);
+
 port.postMessage({ question: "getInformation" });
 port.onMessage.addListener(function (msg) {
-  // check if the message contain cpu information 
-  // if it contain it will send request to get the usage of cpu and memory 
+  // check if the message contain cpu information
+  // if it contain it will send request to get the usage of cpu and memory
   if (msg.cpu) {
     cpuName.textContent = msg.cpu.modelName;
     cpuChart.data.datasets = createDataset(msg.cpu.processors);
@@ -130,21 +132,19 @@ port.onMessage.addListener(function (msg) {
   }
 
   // check if the msg contain the storage information and update the storageInfo with it
-  if(msg.storage)
-  {
-      let txt = "";
-      msg.storage.forEach((storage) => {
-          let capacity = toGB(storage.capacity).toFixed(2);
-          txt += `
+  if (msg.storage) {
+    let txt = "";
+    msg.storage.forEach((storage) => {
+      let capacity = toGB(storage.capacity).toFixed(2);
+      txt += `
             <p> <b> name: ${storage.name} (${storage.type}) </b>
             <p> <b>Capacity: </b>  ${capacity} GB </p>
           `;
-        storageInfo.innerHTML = txt;
-      });
+      storageInfo.innerHTML = txt;
+    });
   }
 
-
-  // if the msg contain the usage it will loop for each usage and update each chart with the usage of it 
+  // if the msg contain the usage it will loop for each usage and update each chart with the usage of it
   if (msg.usage) {
     // update cpu chart with the usage
     msg.usage.cpuUsage.forEach((usage) => {
@@ -169,5 +169,3 @@ port.onMessage.addListener(function (msg) {
     });
   }
 });
-
-
