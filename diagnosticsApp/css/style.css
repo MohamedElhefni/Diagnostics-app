@@ -1,0 +1,22 @@
+nav 
+{
+    background-color: #2980b9;
+}
+
+
+#cpuChart
+{
+    width: 100%;
+}
+
+#memChart
+{
+    width: 100%;
+}
+
+.chart-container
+{
+    margin: auto;
+    width: 90% !important;
+    height: 600px !important;
+}

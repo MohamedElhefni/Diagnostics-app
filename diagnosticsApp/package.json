@@ -1,0 +1,14 @@
+{
+  "name": "diagnosticsapp",
+  "version": "1.0.0",
+  "description": "Diagnostics App to show system usage ",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "http-server "
+  },
+  "author": "Mohamed Elhefni",
+  "license": "ISC",
+  "dependencies": {
+    "http-server": "^0.12.3"
+  }
+}
