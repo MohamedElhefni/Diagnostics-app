@@ -9,7 +9,7 @@ go to **Chrome Extensions** and click Load unpacked and choose **extension Direc
 after installing the chrome extension you can try live demo from here  
 [https://diagnostics-app.netlify.app/](https://diagnostics-app.netlify.app/)
 
-> note: you must install extension first to use the app   
+> note: you must install extension first to use the app and use extension ID on the prompt to connect the pwa and the extension 
 
 
 ## Images
